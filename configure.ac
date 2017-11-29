@@ -33,7 +33,9 @@ if test x"$APXS2" != "xno" ; then
 fi
 
 # Checks for libraries.
-PKG_CHECK_MODULES(MOD_AUTHN_ZAKAUTHE, [libzakauthe])
+PKG_CHECK_MODULES(MOD_AUTHN_ZAKAUTHE, [apr-1
+                                       apr-util-1
+                                       libzakauthe])
 
 AC_SUBST(MOD_AUTHN_ZAKAUTHE_CFLAGS)
 AC_SUBST(MOD_AUTHN_ZAKAUTHE_LIBS)
