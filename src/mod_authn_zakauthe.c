@@ -35,16 +35,72 @@
 
 #include <libzakauthe/libzakauthe.h>
 
+static void register_hooks (apr_pool_t *pool);
+static void *create_authn_zakauthe_dir_config (apr_pool_t *p, char *d);
+
+/* Per-directory configuration */
+typedef struct {
+	char *plugin_name;
+} zakauthe_config;
+
+static const command_rec authn_zakauthe_cmds[] =
+{
+	AP_INIT_TAKE1 ("AuthZakAuthePlugin",
+	               ap_set_string_slot,
+	               (void *)APR_OFFSETOF (zakauthe_config, plugin_name),
+	               OR_AUTHCFG,
+	               "Plugin with full path"),
+	{NULL}
+};
+
+module AP_DECLARE_DATA authn_zakauthe_module =
+{
+	STANDARD20_MODULE_STUFF,
+	create_authn_zakauthe_dir_config,    /* dir config creater */
+	NULL,                            /* dir merger --- default is to override */
+	NULL,                            /* server config */
+	NULL,                            /* merge server config */
+	authn_zakauthe_cmds,                 /* command apr_table_t */
+	register_hooks                   /* register hooks */
+};
+
 static authn_status
-check_password (request_rec *r, const char *user,
+check_password (request_rec *r,
+                const char *user,
                 const char *password)
 {
-	return AUTH_GRANTED;
+	authn_status ret;
+
+	ZakAuthe *authe;
+	GSList *sl_authe_params;
+
+	zakauthe_config *config = (zakauthe_config *)ap_get_module_config (r->per_dir_config, &authn_zakauthe_module);
+
+	sl_authe_params = NULL;
+	sl_authe_params = g_slist_append (sl_authe_params, config->plugin_name);
+
+	authe = zak_authe_new ();
+
+	if (zak_authe_set_config (authe, sl_authe_params))
+		{
+			ret = AUTH_GRANTED;
+		}
+	else
+		{
+			ret = AUTH_DENIED;
+		}
+
+	g_object_unref (authe);
+	g_slist_free (sl_authe_params);
+
+	return ret;
 }
 
 static authn_status
-get_realm_hash (request_rec *r, const char *user,
-                const char *realm, char **rethash)
+get_realm_hash (request_rec *r,
+                const char *user,
+                const char *realm,
+                char **rethash)
 {
 	return AUTH_GRANTED;
 }
@@ -63,13 +119,15 @@ register_hooks (apr_pool_t *pool)
 	                           &authn_zakauthe_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
-AP_DECLARE_MODULE(authn_zakauthe) =
+/*
+ * Constructor for per-directory configuration
+ */
+static void *
+create_authn_zakauthe_dir_config (apr_pool_t *p, char *d)
 {
-	STANDARD20_MODULE_STUFF,
-	NULL,    /* dir config creater */
-	NULL,                            /* dir merger --- default is to override */
-	NULL,                            /* server config */
-	NULL,                            /* merge server config */
-	NULL,                 /* command apr_table_t */
-	register_hooks                   /* register hooks */
-};
+	zakauthe_config *conf = apr_pcalloc (p, sizeof (zakauthe_config));
+
+	conf->plugin_name = NULL;
+
+	return conf;
+}
