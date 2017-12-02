@@ -37,10 +37,12 @@
 
 static void register_hooks (apr_pool_t *pool);
 static void *create_authn_zakauthe_dir_config (apr_pool_t *p, char *d);
+static const char *set_option (cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2);
 
 /* Per-directory configuration */
 typedef struct {
 	char *plugin_name;
+	GSList *sl_options;
 } zakauthe_config;
 
 static const command_rec authn_zakauthe_cmds[] =
@@ -50,6 +52,11 @@ static const command_rec authn_zakauthe_cmds[] =
 	               (void *)APR_OFFSETOF (zakauthe_config, plugin_name),
 	               OR_AUTHCFG,
 	               "Plugin with full path"),
+	AP_INIT_TAKE2 ("AuthZakAutheOption",
+	               set_option,
+	               NULL,
+	               OR_AUTHCFG,
+	               "An option with the value"),
 	{NULL}
 };
 
@@ -78,12 +85,20 @@ check_password (request_rec *r,
 
 	sl_authe_params = NULL;
 	sl_authe_params = g_slist_append (sl_authe_params, config->plugin_name);
+	sl_authe_params = g_slist_concat (sl_authe_params, config->sl_options);
 
 	authe = zak_authe_new ();
 
 	if (zak_authe_set_config (authe, sl_authe_params))
 		{
-			ret = AUTH_GRANTED;
+			if (zak_authe_authe_nogui (authe, user, password, NULL))
+				{
+					ret = AUTH_GRANTED;
+				}
+			else
+				{
+					ret = AUTH_DENIED;
+				}
 		}
 	else
 		{
@@ -128,6 +143,17 @@ create_authn_zakauthe_dir_config (apr_pool_t *p, char *d)
 	zakauthe_config *conf = apr_pcalloc (p, sizeof (zakauthe_config));
 
 	conf->plugin_name = NULL;
+	conf->sl_options = NULL;
 
 	return conf;
+}
+
+static const char
+*set_option (cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
+{
+	zakauthe_config *const conf = (zakauthe_config *)cfg;
+
+	conf->sl_options = g_slist_append (conf->sl_options, (gpointer)g_strdup (arg2));
+
+	return NULL;
 }
