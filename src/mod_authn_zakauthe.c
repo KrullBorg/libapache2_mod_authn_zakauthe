@@ -35,16 +35,32 @@
 
 #include <libzakauthe/libzakauthe.h>
 
-static int
-example_handler (request_rec *r)
+static authn_status
+check_password (request_rec *r, const char *user,
+                const char *password)
 {
+	return AUTH_GRANTED;
 }
+
+static authn_status
+get_realm_hash (request_rec *r, const char *user,
+                const char *realm, char **rethash)
+{
+	return AUTH_GRANTED;
+}
+
+static const authn_provider authn_zakauthe_provider =
+	{
+		&check_password,
+		&get_realm_hash,
+	};
 
 static void
 register_hooks (apr_pool_t *pool)
 {
-	/* Create a hook in the request handler, so we get called when a request arrives */
-	ap_hook_handler(example_handler, NULL, NULL, APR_HOOK_LAST);
+	ap_register_auth_provider (pool, AUTHN_PROVIDER_GROUP, "zakauthe",
+	                           AUTHN_PROVIDER_VERSION,
+	                           &authn_zakauthe_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 AP_DECLARE_MODULE(authn_zakauthe) =
