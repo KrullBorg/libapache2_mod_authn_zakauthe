@@ -7,7 +7,7 @@ Subject: apache api version 2.2
  1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/mod_authn_zakauthe.c b/src/mod_authn_zakauthe.c
-index 0880081..23837e1 100644
+index 2474b42..23837e1 100644
 --- a/src/mod_authn_zakauthe.c
 +++ b/src/mod_authn_zakauthe.c
 @@ -129,9 +129,9 @@ static const authn_provider authn_zakauthe_provider =

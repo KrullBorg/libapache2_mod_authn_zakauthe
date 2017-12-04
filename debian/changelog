@@ -1,6 +1,6 @@
-libapache2-mod-authn-zakauthe (0.0.1-2~2.gbpff962a) UNRELEASED; urgency=medium
+libapache2-mod-authn-zakauthe (0.0.1-2~3.gbp53ad4a) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @ff962a7d52e1a697b9d15c67246b8c7f01c8d506 **
+  ** SNAPSHOT build @53ad4a45f1abb50ed148e5e636ae9c85d1c6a4de **
 
   [ Andrea Zagli ]
   ** SNAPSHOT build @99cea452a9bc102436b3195e6241e49ee956cc8d **
@@ -9,5 +9,6 @@ libapache2-mod-authn-zakauthe (0.0.1-2~2.gbpff962a) UNRELEASED; urgency=medium
   * Debian pkg: added files.
   * Debian pkg: added files.
   * Debian pkg: added files.
+  * Debian pkg: apache2.2 old api.
 
- -- tux <tux@develop64.example.tst>  Mon, 04 Dec 2017 15:35:07 +0100
+ -- tux <tux@develop64.example.tst>  Fri, 15 Dec 2017 11:55:22 +0100

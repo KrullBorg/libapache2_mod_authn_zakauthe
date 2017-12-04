@@ -1,2 +1,3 @@
 0001-autogen.sh-aclocal-missing-I.patch
 0002-Apache-api-old-version.patch
+0003-Forced-g_type-init.patch
