@@ -1,6 +1,6 @@
-libapache2-mod-authn-zakauthe (0.0.1-2~3.gbp53ad4a) UNRELEASED; urgency=medium
+libapache2-mod-authn-zakauthe (0.0.1-2~5.gbp2ef715) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @53ad4a45f1abb50ed148e5e636ae9c85d1c6a4de **
+  ** SNAPSHOT build @2ef71596465eaa79ee735e7abb82d4174a0fc542 **
 
   [ Andrea Zagli ]
   ** SNAPSHOT build @99cea452a9bc102436b3195e6241e49ee956cc8d **
@@ -10,5 +10,8 @@ libapache2-mod-authn-zakauthe (0.0.1-2~3.gbp53ad4a) UNRELEASED; urgency=medium
   * Debian pkg: added files.
   * Debian pkg: added files.
   * Debian pkg: apache2.2 old api.
+  * Wrong const definition.
+  * Wrong const definition.
+  * Wrong GSList allocation for parameters to pass to zakauthe.
 
- -- tux <tux@develop64.example.tst>  Fri, 15 Dec 2017 11:55:22 +0100
+ -- tux <tux@develop64.example.tst>  Mon, 04 Dec 2017 17:21:23 +0100
