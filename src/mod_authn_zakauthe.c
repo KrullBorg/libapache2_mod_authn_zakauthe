@@ -80,12 +80,20 @@ check_password (request_rec *r,
 
 	ZakAuthe *authe;
 	GSList *sl_authe_params;
+	GSList *sl_loop;
 
 	zakauthe_config *config = (zakauthe_config *)ap_get_module_config (r->per_dir_config, &authn_zakauthe_module);
 
 	sl_authe_params = NULL;
-	sl_authe_params = g_slist_append (sl_authe_params, config->plugin_name);
-	sl_authe_params = g_slist_concat (sl_authe_params, config->sl_options);
+	sl_authe_params = g_slist_append (sl_authe_params, g_strdup (config->plugin_name));
+
+	sl_loop = g_slist_nth (config->sl_options, 0);
+	while (sl_loop != NULL)
+		{
+			sl_authe_params = g_slist_append (sl_authe_params, g_strdup ((const gchar *)sl_loop->data));
+
+			sl_loop = g_slist_next (sl_loop);
+		}
 
 	authe = zak_authe_new ();
 
@@ -106,7 +114,7 @@ check_password (request_rec *r,
 		}
 
 	g_object_unref (authe);
-	g_slist_free (sl_authe_params);
+	g_slist_free_full (sl_authe_params, g_free);
 
 	return ret;
 }
