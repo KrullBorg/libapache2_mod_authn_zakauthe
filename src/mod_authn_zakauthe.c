@@ -151,7 +151,7 @@ create_authn_zakauthe_dir_config (apr_pool_t *p, char *d)
 static const char
 *set_option (cmd_parms *cmd, void *cfg, const char *arg1, const char *arg2)
 {
-	zakauthe_config *const conf = (zakauthe_config *)cfg;
+	zakauthe_config *conf = (zakauthe_config *)cfg;
 
 	conf->sl_options = g_slist_append (conf->sl_options, (gpointer)g_strdup (arg2));
 
