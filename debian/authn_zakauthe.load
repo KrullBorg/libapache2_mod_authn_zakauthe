@@ -1,0 +1,1 @@
+LoadModule authn_zakauthe_module /usr/lib/apache2/modules/mod_authn_zakauthe.so
